@@ -19,11 +19,11 @@ class SiswaFactory extends Factory
         return [
             'nama' => fake()->name(),
             'tempat_lahir' => fake()->city,
-            'tanggal_lahir' => fake()->date('Y-m-d'),
+            'tanggal_lahir' => '2019-02-02',
             'jenis_kelamin' => fake()->randomElements(['Laki - laki', 'Perempuan']),
             'agama' => 'Islam',
             // 'whatsapp' => fake()->unique()->randomNumber(5, true),
-            'whatsapp' => fake()->unique()->text(),
+            'whatsapp' => fake()->unique()->num(),
             'nama_ayah' => fake()->name,
             'nama_ibu' => fake()->name,
             'alamat' => fake()->address,

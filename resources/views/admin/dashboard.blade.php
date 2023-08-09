@@ -22,54 +22,58 @@
 </div>
 
 <div id="cetak">
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-chart-area me-1"></i>
-            Total Pendaftar
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-horizontal">
-                <li class="list-group-item">Total pendaftar: <strong>{{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->count() }}</strong></li>
-                <li class="list-group-item">Perlu Divalidasi: <strong>{{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 0)->count() }}</strong></li>
-                <li class="list-group-item">Diterima: <strong>{{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 1)->count() }}</strong></li>
-                <li class="list-group-item">Ditolak: <strong>{{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 2)->count() }}</strong></li>
-              </ul>
-        </div>
+
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <strong>Total Pendaftar: {{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->count() }}</strong> |
+      <strong>Perlu Validasi: {{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 0)->count() }}</strong> |
+      <strong>Diterima: {{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 1)->count() }}</strong> |
+      <strong>Ditolak: {{ DB::table('siswa')->whereYear('created_at', \Carbon\Carbon::now()->format('Y'))->where('status', 2)->count() }}</strong>
+  </div>
     </div>
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-chart-area me-1"></i>
-            Status (Progres/ Ditermia/ Ditolak) Grafik Baris 1 tahun berdasarkan bulan
-        </div>
-        <div class="card-body"><canvas id="myAreaChart" width="100%" height="30"></canvas></div>
-    </div>
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-chart-area me-1"></i>
-            Diagram Bar
-        </div>
-        <div class="card-body"><canvas id="myBarChart" width="100%" height="30"></canvas></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-bar me-1"></i>
-                    Persentase
-                </div>
-                <div class="card-body"><canvas id="myPieChart" width="100%" height="30"></canvas></div>
+
+  <div class="row">
+      <div class="col-md-6">
+          <div class="card mb-4">
+              <div class="card-header">
+                  <i class="fas fa-chart-area me-1"></i>
+                  Line Chart
+              </div>
+              <div class="card-body"><canvas id="myLineChart" width="100%" height="40"></canvas></div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card mb-4">
+              <div class="card-header">
+                  <i class="fas fa-chart-bar me-1"></i>
+                  Bar Chart
+              </div>
+              <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+          </div>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Persentase
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-pie me-1"></i>
-                    RPM
-                </div>
-                <div class="card-body"><canvas id="rpm" width="75%" height="30"></canvas></div>
-            </div>
+            <div class="card-body"><canvas id="myPercentageChart" width="100%" height="40"></canvas></div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                RPM Chart
+            </div>
+            <div class="card-body"><canvas id="myRpmChart" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="modal fade" id="modalImport" tabindex="-1" aria-labelledby="modalImportLabel" aria-hidden="true">
@@ -118,19 +122,21 @@
 @endsection
 
 @section('footer')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://unpkg.com/chart.js-plugin-labels-dv/dist/chartjs-plugin-labels.min.js"></script>
 
 {{-- line --}}
 <script>
-    var ctx = document.getElementById("myAreaChart");
+    var ctx = document.getElementById("myLineChart");
     var cDataPerbulanDiterima = JSON.parse('<?php echo $perbulanditerima; ?>');
     var cDataPerbulanDitolak = JSON.parse('<?php echo $perbulanditolak; ?>');
 
     var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: cDataPerbulanDiterima.label,
-        datasets: [{
+      type: 'line',
+      data: {
+      labels: cDataPerbulanDiterima.label,
+      datasets: [{
         label: "Diterima",
         lineTension: 0.3,
         backgroundColor: "rgba(2,117,216,0.2)",
@@ -143,55 +149,55 @@
         pointHitRadius: 50,
         pointBorderWidth: 2,
         data: cDataPerbulanDiterima.data,
-        },{
+      },{
         label: "Ditolak",
         lineTension: 0.3,
-        backgroundColor: "rgba(2,107,206,0.2)",
-        borderColor: "rgba(2,107,100,1)",
+        backgroundColor: "rgba(250, 128, 114,0.2)",
+        borderColor: "rgba(250, 128, 114,1)",
         pointRadius: 5,
-        pointBackgroundColor: "rgba(250,128,114,1)",
-        pointBorderColor: "rgba(250,128,114,0.8)",
+        pointBackgroundColor: "rgba(250, 128, 114,1)",
+        pointBorderColor: "rgba(255,255,255,0.8)",
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(250,128,114,1)",
+        pointHoverBackgroundColor: "rgba(250, 128, 114,1)",
         pointHitRadius: 50,
         pointBorderWidth: 2,
         data: cDataPerbulanDitolak.data,
-        }],
+      }],
     },
     options: {
-        scales: {
+      scales: {
         xAxes: [{
-            time: {
+          time: {
             unit: 'date'
-            },
-            gridLines: {
+          },
+          gridLines: {
             display: false
-            },
-            ticks: {
-            maxTicksLimit: 7
-            }
+          },
+          ticks: {
+            maxTicksLimit: 12
+          }
         }],
         yAxes: [{
-            ticks: {
+          ticks: {
             min: 0,
-            max: 20,
-            maxTicksLimit: 5
-            },
-            gridLines: {
+            max: 30,
+            maxTicksLimit: 3
+          },
+          gridLines: {
             color: "rgba(0, 0, 0, .125)",
-            }
+          }
         }],
-        },
-        legend: {
+      },
+      legend: {
         display: false
-        }
+      }
     }
-    });
-
+  });
 </script>
 
 {{-- bar --}}
 <script>
+    var ctx = document.getElementById('myBarChart');
     var cDataPerbulanDiterima = JSON.parse('<?php echo $perbulanditerima; ?>');
     var cDataPerbulanDitolak = JSON.parse('<?php echo $perbulanditolak; ?>');
 
@@ -200,70 +206,14 @@
       datasets: [{
         label: 'Diterima',
         data: cDataPerbulanDiterima.data,
-        backgroundColor: [
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(0, 0, 0, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
+        backgroundColor: "rgba(2, 117, 216, 0.2)",
+        borderColor: "rgba(2,117,216,1)",
         borderWidth: 1
       },{
         label: 'Ditolak',
         data: cDataPerbulanDitolak.data,
-        backgroundColor: [
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(0, 0, 0, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
+        backgroundColor: "rgba(250, 128, 114, 0.2)",
+        borderColor: "rgba(250, 128, 114, 1)",
         borderWidth: 1
       }]
     };
@@ -277,9 +227,27 @@
             mode: 'index'
         },
         scales: {
-          y: {
-            beginAtZero: true
-          }
+          xAxes: [{
+            time: {
+            unit: 'month'
+            },
+            gridLines: {
+            display: false
+            },
+            ticks: {
+            maxTicksLimit: 12
+            }
+          }],
+          yAxes: [{
+            ticks: {
+            min: 0,
+            max: 30,
+            maxTicksLimit: 5
+            },
+            gridLines: {
+            color: "rgba(0, 0, 0, .125)",
+            }
+          }],
         }
       }
     };
@@ -289,114 +257,106 @@
       document.getElementById('myBarChart'),
       config
     );
-
-    // Instantly assign Chart.js version
-    const chartVersion = document.getElementById('chartVersion');
-    chartVersion.innerText = Chart.version;
 </script>
 
 {{-- pie --}}
 <script>
-    var cDataPerbulanDiterima = JSON.parse('<?php echo $perbulanditerima; ?>');
-    var cDataPerbulanDitolak = JSON.parse('<?php echo $perbulanditolak; ?>');
+  const cDataPercentage = JSON.parse('<?php echo $totalmendaftar; ?>');
 
-    const data = {
-      labels: cDataPerbulanDiterima.label,
-      datasets: [{
-        label: 'Diterima',
-        data: cDataPerbulanDiterima.data,
-        backgroundColor: [
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(0, 0, 0, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
-        borderWidth: 1
-      },{
-        label: 'Ditolak',
-        data: cDataPerbulanDitolak.data,
-        backgroundColor: [
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 26, 104, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(0, 0, 0, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 26, 104, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(0, 0, 0, 1)'
-        ],
-        borderWidth: 1
-      }]
-    };
+  let diterima = 0;
+  cDataPerbulanDiterima.data.forEach(num => {
+    diterima += num
+  });
 
-    // config 
-    const config = {
-      type: 'pie',
-      data,
-      options: {
-        interaction: {
-            mode: 'index'
+  let ditolak = 0;
+  cDataPerbulanDitolak.data.forEach(num => {
+    ditolak += num
+  });
+
+  const datapie = {
+    labels: [
+      'Diterima',
+      'Ditolak',
+    ],
+    datasets: [{
+      label: 'Total',
+      data: [diterima, ditolak],
+      backgroundColor: [
+        'rgb(54, 162, 235)',
+        'rgb(255, 99, 132)',
+      ],
+      hoverOffset: 4,
+      rotation: 180
+    }]
+  };
+
+  const configpie = {
+    type: 'pie',
+    data: datapie,
+    options: {
+      scales: {
+      },
+      plugins: {
+        tooltip: {
+          enabled: false
         },
-        scales: {
+        datalabels: {
+          formatter: (value, context) => {
+            // console.log(value)
+            // console.log(context.chart.data.datasets[0].data)
+            const datapoints = context.chart.data.datasets[0].data
+            function totalSum(total, datapoint) {
+              return total + datapoint
+            }
+            const totalValue = datapoints.reduce(totalSum, 0)
+            const percentageValue = (value / totalValue * 100).toFixed(0)
+            return percentageValue + '%'
+          },
+          color: '#fff',
         }
       }
-    };
+    },
+    plugins: [ChartDataLabels]
+  };
 
-    // render init block
-    const myChart = new Chart(
-      document.getElementById('myPieChart'),
-      config
-    );
-
-    // Instantly assign Chart.js version
-    const chartVersion = document.getElementById('chartVersion');
-    chartVersion.innerText = Chart.version;
+  const myPercentageChart = new Chart(
+    document.getElementById('myPercentageChart'),
+    configpie
+  );
 </script>
 
+{{-- RPM chart --}}
+<script>
+  const cDataMendaftarAll = JSON.parse('<?php echo $totalmendaftarall; ?>');
+  const datarpm = {
+    labels: cDataMendaftarAll.label,
+    datasets: [{
+      label: 'Total',
+      data: cDataMendaftarAll.data,
+      backgroundColor: [
+        'rgb(54, 162, 235)',
+        'rgb(255, 99, 132)',
+        'rgb(54, 255, 125)',
+      ],
+      hoverOffset: 4,
+      circumference: 180,
+      rotation: -90,
+    }],
+    
+  };
 
+  const configrpm = {
+    type: 'pie',
+    data: datarpm,
+    plugins: [ChartDataLabels] 
+  };
+
+  const myRpmCHart = new Chart(
+    document.getElementById("myRpmChart"),
+    configrpm
+  )
+</script>
+
+{{-- html2pdf --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection

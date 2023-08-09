@@ -27,7 +27,7 @@
     <div class="card-body">
         <table id="datatablesSimple">
             <thead>
-                <tr class="text-center">
+                <tr>
                     <th>Nama</th>
                     <th>Tanggal lahir</th>
                     <th>Jurusan</th>
@@ -47,19 +47,19 @@
                         <td>{{ $row }}</td>
                         <td><a href="https://wa.me/62{{ $inner->whatsapp }}" target="_blank">0{{ $inner->whatsapp }}</a></td>
                         <td>{{ $inner->alamat }}</td>
-                        <td class="text-center">
+                        <td>
                             @if ($inner->status == 0)
-                                <a href="{{ route('admin.siswa.diterima', ['id'=>$inner->id]) }}" class="btn btn-sm btn-success">Terima</a>
-                                <a href="{{ route('admin.siswa.ditolak', ['id'=>$inner->id]) }}" class="btn btn-sm btn-danger">Tolak</a>
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ route('admin.siswa.diterima', ['id'=>$inner->id]) }}" class="btn btn-sm btn-success">Terima</a>
+                                    <a href="{{ route('admin.siswa.ditolak', ['id'=>$inner->id]) }}" class="btn btn-sm btn-danger">Tolak</a>
+                                </div>
+
+                            @elseif ($inner->status == 1)
+                            <p class="text-center">&#9745; diterima</p>
+                            @elseif ($inner->status == 2)
+                            <p class="text-center">&#10005; ditolak</p>
                             @endif
 
-                            @if ($inner->status == 1)
-                                <strong class="text-center text-success"><i class="fa-solid fa-check-double"></i> diterima</strong>
-                            @endif
-                            
-                            @if ($inner->status == 2)
-                                <strong class="text-center text-danger"><i class="fa-solid fa-xmark"></i> ditolak</strong>
-                            @endif
                         </td>
                         <td>
                             <form action="{{ route('admin.siswa.hapus', ['id'=>$inner->id]) }}" method="post">

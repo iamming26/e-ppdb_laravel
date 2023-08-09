@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(UserSeeder::class);
         // $this->call(SiswaSeeder::class);
+        // \App\Models\Siswa::factory(5)->create();
     }
 }

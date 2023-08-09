@@ -68,15 +68,11 @@
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inner->created_at)->locale('id_ID')->isoFormat('DD MMM YYYY'); }}</td>
                                         <td class="text-center">
                                             @if ($inner->status == 0)
-                                                <strong class="text-center text-primary"><i class="fa-regular fa-clock"></i> proses</strong>
-                                            @endif
-
-                                            @if ($inner->status == 1)
-                                                <strong class="text-center text-success"><i class="fa-solid fa-check-double"></i> diterima</strong>
-                                            @endif
-                                            
-                                            @if ($inner->status == 2)
-                                                <strong class="text-center text-danger"><i class="fa-solid fa-xmark"></i> ditolak</strong>
+                                            <p class="text-center">&#8635; perlu divalidasi</p>
+                                            @elseif ($inner->status == 1)
+                                            <p class="text-center">&#9745; diterima</p>
+                                            @elseif ($inner->status == 2)
+                                            <p class="text-center">&#10005; ditolak</p>
                                             @endif
                                         </td>
                                     </tr>
